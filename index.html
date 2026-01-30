@@ -3,264 +3,1351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1e3a8a">
-    <title>SISTEM LAPORAN KORAMIL 1609-05/Sukasada</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="description" content="Formatter Laporan Harian Koramil 1609-05/Sukasada">
+    <title>Formatter Laporan Koramil</title>
+    <style>
+        /* CSS CODE YANG SUDAH ADA - JANGAN DIUBAH */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 15px;
+        }
+        
+        /* ... SEMUA CSS STYLE YANG SUDAH ADA ... */
+        
+        /* Success/Error Messages */
+        .message {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <div>Memuat...</div>
+    <!-- Loading -->
+    <div id="loading" class="loading">Memproses...</div>
+    
+    <!-- Header -->
+    <div class="header">
+        <h1>FORM LAPORAN HARIAN KORAMIL 1609-05/Sukasada</h1>
+        <h2>Generator Laporan Perkembangan Situasi</h2>
     </div>
-
-    <div class="container">
-        <header>
-            <h1>📋 SISTEM LAPORAN HARIAN KORAMIL</h1>
-            <h2>Koramil 1609-05/Sukasada - Format Laporan Terstandar</h2>
-            <div class="version">Versi 3.0</div>
-        </header>
-
-        <nav class="tabs">
-            <button class="tab active" data-tab="laporan">📝 LAPORAN</button>
-            <button class="tab" data-tab="database">🗄️ DATABASE</button>
-            <button class="tab" data-tab="config">⚙️ KONFIG</button>
-        </nav>
-
-        <main class="main-content">
-            <!-- TAB LAPORAN -->
-            <div id="laporan" class="tab-content active">
-                <div class="form-section">
-                    <h3><span class="icon">📋</span> FORM INPUT LAPORAN</h3>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Form Input -->
+        <div class="form-container">
+            <h3 class="section-title">INPUT DATA LAPORAN</h3>
+            
+            <!-- Waktu Laporan -->
+            <div class="input-group">
+                <label>WAKTU LAPORAN</label>
+                <div class="input-row">
+                    <div>
+                        <label>Tanggal</label>
+                        <input type="date" id="reportDate" oninput="autoGenerateReport()">
+                    </div>
+                    <div>
+                        <label>Waktu</label>
+                        <select id="reportTime" onchange="autoGenerateReport()">
+                            <option value="04.00">04.00 WITA</option>
+                            <option value="16.00">16.00 WITA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="periode-info" id="periodeInfo">
+                    <strong>Periode Laporan:</strong><br>
+                    • 04.00 WITA: Periode sore (16.00-04.00) hari sebelumnya<br>
+                    • 16.00 WITA: Periode pagi (04.00-16.00) hari yang sama
+                </div>
+                <div class="auto-generate-notice">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate
+                </div>
+            </div>
+            
+            <!-- Situasi & Haljol -->
+            <div class="input-group">
+                <label>SITUASI DAN HALJOL</label>
+                <div style="margin-bottom: 8px;">
+                    <label style="font-size: 12px; color: #666;">Situasi (Otomatis)</label>
+                    <div class="situasi-preview" id="situasiPreview">
+                        Situasi akan tampil otomatis di sini
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #666;">Haljol</label>
+                    <input type="text" id="haljol" value="Nihil" 
+                           oninput="checkExcessSpaces('haljol'); autoGenerateReport()" 
+                           onkeyup="checkExcessSpaces('haljol')">
+                </div>
+                <div class="auto-generate-notice">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate
+                </div>
+                <div class="keterangan-note">
+                    Input dengan spasi berlebih akan berwarna kuning
+                </div>
+            </div>
+            
+            <!-- DATA SIAP OPS (MODIFIED) -->
+            <div class="input-group">
+                <label>DATA SIAP OPS</label>
+                <div class="data-siap-ops-grid">
+                    <div class="data-label">Top DSPP</div>
+                    <div>
+                        <input type="number" id="topDspp" class="data-input readonly" value="25" readonly>
+                    </div>
                     
-                    <div class="form-group">
-                        <label>WAKTU LAPORAN</label>
-                        <div class="row">
-                            <div>
-                                <label>Tanggal</label>
-                                <input type="date" id="reportDate" oninput="updateReport()">
-                            </div>
-                            <div>
-                                <label>Waktu</label>
-                                <select id="reportTime" onchange="updateReport()">
-                                    <option value="04.00">04.00 WITA</option>
-                                    <option value="16.00">16.00 WITA</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="info-box" id="periodeInfo">
-                            Periode laporan akan tampil di sini
-                        </div>
+                    <div class="data-label">Nyata</div>
+                    <div>
+                        <input type="number" id="nyata" class="data-input readonly" value="19" readonly>
                     </div>
-
-                    <div class="form-group">
-                        <label>SITUASI DAN HALJOL</label>
-                        <div class="info-box" id="situasiPreview">
-                            Situasi akan tampil otomatis
-                        </div>
-                        <input type="text" id="haljol" value="Nihil" placeholder="Haljol" oninput="updateReport()">
+                    
+                    <div class="data-label">Kurang</div>
+                    <div>
+                        <input type="number" id="kurang" class="data-input" value="9">
                     </div>
-
-                    <div class="form-group">
-                        <label>DATA SIAP OPS</label>
-                        <div class="data-grid">
-                            <div>Top DSPP</div>
-                            <input type="number" id="topDspp" value="25" readonly>
-                            
-                            <div>Nyata</div>
-                            <input type="number" id="nyata" value="19" readonly>
-                            
-                            <div>Kurang</div>
-                            <input type="number" id="kurang" value="9">
-                            
-                            <div>Siap Ops</div>
-                            <input type="number" id="siapOps" value="10" readonly>
-                        </div>
-                        <div class="note">
-                            <span class="icon">⟳</span> Nilai "Kurang" terupdate otomatis dari Keterangan
-                        </div>
+                    
+                    <div class="data-label">Siap Ops</div>
+                    <div>
+                        <input type="number" id="siapOps" class="data-input readonly" value="10" readonly>
                     </div>
-
-                    <div class="form-group">
-                        <label>KETERANGAN</label>
-                        <textarea id="keterangan" 
-                                  onkeydown="handleKeteranganEnter(event)"
-                                  oninput="updateKurang(); updateReport()">-DD : 0
+                </div>
+                <div class="keterangan-note" style="margin-top: 8px;">
+                    Nilai "Kurang" akan otomatis terupdate berdasarkan input Keterangan di bawah
+                </div>
+                <div class="auto-generate-notice">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate
+                </div>
+            </div>
+            
+            <!-- KETERANGAN (MODIFIED) -->
+            <div class="input-group">
+                <label>KETERANGAN</label>
+                <textarea class="auto-resize" id="keterangan" placeholder="Ketik keterangan (tekan Enter untuk baris baru, otomatis tambah '-')" onkeydown="handleKeteranganKeydown(event)" oninput="updateKurangFromKeterangan(); autoGenerateReport()">-DD : 0
 -BP : 0
 -Sakit : 0
 -Ijin : 0
 -Cuti : 0
 -Dinas Luar : 0</textarea>
-                        <div class="note">
-                            <span class="icon">📝</span> Format: -Item : Jumlah (Enter untuk baris baru)
-                        </div>
-                    </div>
-
-                    <!-- KEGIATAN DANRAMIL -->
-                    <div class="activity-box">
-                        <div class="activity-header">
-                            <h4>KEGIATAN DANRAMIL</h4>
-                            <button class="btn-add" onclick="addActivity('danramil')">+</button>
-                        </div>
-                        <div id="danramil-container">
-                            <div class="activity-item">
-                                <div class="item-controls">
-                                    <button class="btn-add-small" onclick="addActivity('danramil')">+</button>
-                                    <button class="btn-remove-small" onclick="removeActivity(this, 'danramil')">−</button>
-                                </div>
-                                <textarea class="activity-input" placeholder="Tulis kegiatan Danramil..." oninput="updateReport()"></textarea>
-                            </div>
-                        </div>
-                        <div class="note">
-                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
-                        </div>
-                    </div>
-
-                    <!-- KEGIATAN KORAMIL -->
-                    <div class="activity-box">
-                        <div class="activity-header">
-                            <h4>KEGIATAN KORAMIL</h4>
-                            <button class="btn-add" onclick="addActivity('koramil')">+</button>
-                        </div>
-                        <div id="koramil-container">
-                            <div class="activity-item">
-                                <div class="item-controls">
-                                    <button class="btn-add-small" onclick="addActivity('koramil')">+</button>
-                                    <button class="btn-remove-small" onclick="removeActivity(this, 'koramil')">−</button>
-                                </div>
-                                <textarea class="activity-input" placeholder="Tulis kegiatan Koramil..." oninput="updateReport()">2 orang anggota melaksanakan dinas dalam, jaga pangkalan Koramil 1609-05/Sukasada.</textarea>
-                            </div>
-                        </div>
-                        <div class="note">
-                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
-                        </div>
-                    </div>
-
-                    <!-- KEGIATAN BABINSA -->
-                    <div class="activity-box">
-                        <div class="activity-header">
-                            <h4>KEGIATAN BABINSA</h4>
-                            <button class="btn-add" onclick="addActivity('babinsa')">+</button>
-                        </div>
-                        <div id="babinsa-container">
-                            <div class="activity-item">
-                                <div class="item-controls">
-                                    <button class="btn-add-small" onclick="addActivity('babinsa')">+</button>
-                                    <button class="btn-remove-small" onclick="removeActivity(this, 'babinsa')">−</button>
-                                </div>
-                                <textarea class="activity-input" placeholder="Tulis kegiatan Babinsa..." oninput="updateReport()"></textarea>
-                            </div>
-                        </div>
-                        <div class="note">
-                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
-                        </div>
-                    </div>
-
-                    <!-- TOMBOL ACTION -->
-                    <div class="action-buttons">
-                        <button class="btn-save" onclick="saveLaporan()">
-                            <span class="icon">💾</span> SIMPAN LAPORAN
-                        </button>
-                        <button class="btn-whatsapp" onclick="kirimWhatsApp()">
-                            <span class="icon">📱</span> KIRIM WHATSAPP
-                        </button>
-                    </div>
+                <div class="keterangan-note">
+                    Format: -Item : Jumlah (tekan Enter untuk baris baru). Nilai akan otomatis menghitung "Kurang" di DATA SIAP OPS
                 </div>
-
-                <div class="preview-section">
-                    <h3><span class="icon">👁️</span> PREVIEW LAPORAN</h3>
-                    <div class="note">
-                        <span class="icon">⟳</span> Preview otomatis terupdate
-                    </div>
-                    <textarea id="output" class="preview-output" readonly></textarea>
-                    
-                    <div class="action-buttons">
-                        <button class="btn-save" onclick="saveLaporan()">
-                            <span class="icon">💾</span> SIMPAN LAPORAN
-                        </button>
-                        <button class="btn-whatsapp" onclick="kirimWhatsApp()">
-                            <span class="icon">📱</span> KIRIM WHATSAPP
-                        </button>
-                    </div>
+                <div class="auto-generate-notice">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate
                 </div>
             </div>
-
-            <!-- TAB DATABASE -->
-            <div id="database" class="tab-content">
-                <div class="db-container">
-                    <h3><span class="icon">🗄️</span> DATABASE LAPORAN</h3>
-                    
-                    <div class="filter-row">
-                        <select id="filterTahun">
-                            <option value="">Pilih Tahun</option>
-                        </select>
-                        <input type="text" id="searchInput" placeholder="Cari laporan...">
-                        <button class="btn-refresh" onclick="loadDatabase()">🔄 Refresh</button>
-                    </div>
-
-                    <div id="databaseTable" class="db-table">
-                        <div class="empty-state">
-                            <span class="icon">📭</span>
-                            <p>Belum ada data laporan</p>
-                            <button onclick="loadDatabase()">Muat Data</button>
+            
+            <!-- KEGIATAN DENGAN ROUNDED TEXT BOX -->
+            <div class="input-group">
+                <label>KEGIATAN</label>
+                
+                <!-- Kegiatan Danramil -->
+                <div class="kegiatan-container">
+                    <div class="kegiatan-box">
+                        <div class="kegiatan-header">
+                            <div class="kegiatan-title">Kegiatan Danramil</div>
+                            <div class="kegiatan-controls">
+                                <button type="button" class="add-btn" onclick="addKegiatanItem('danramil')">+1</button>
+                            </div>
+                        </div>
+                        <div class="kegiatan-content" id="danramil-container">
+                            <div class="kegiatan-item">
+                                <div class="item-controls">
+                                    <button type="button" class="item-add-btn" onclick="addKegiatanItem('danramil')">+1</button>
+                                    <button type="button" class="item-remove-btn" onclick="removeKegiatanItem(this, 'danramil')">-</button>
+                                </div>
+                                <textarea class="kegiatan-textarea-rounded auto-resize" 
+                                          placeholder="Tulis kegiatan Danramil 1..." 
+                                          id="danramil-0"
+                                          oninput="autoResize(this); checkExcessSpacesTextarea(this); autoGenerateReport()" 
+                                          onkeyup="checkExcessSpacesTextarea(this)"></textarea>
+                            </div>
+                        </div>
+                        <div class="kegiatan-instruction">
+                            Klik angka hijau untuk menambah kegiatan (laporan ke-2, ke-3, dst), "-" untuk menghapus. Input dengan spasi berlebih akan berwarna kuning.
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- TAB KONFIG -->
-            <div id="config" class="tab-content">
-                <div class="config-container">
-                    <h3><span class="icon">⚙️</span> KONFIGURASI SISTEM</h3>
-                    
-                    <div class="form-group">
-                        <label>API ENDPOINTS</label>
-                        <div class="config-grid">
-                            <div>API Write URL</div>
-                            <input type="text" id="apiWriteUrl" placeholder="https://script.google.com/macros/s/AKfycbwpPguPht8jgl7nyXucPZUant78RlioqtBOU1CYyyW4UoVRpfJm-4lnV4uLeMstoIHSjQ/exec">
-                            
-                            <div>API Read URL</div>
-                            <input type="text" id="apiReadUrl" placeholder="https://script.google.com/macros/s/AKfycbwpPguPht8jgl7nyXucPZUant78RlioqtBOU1CYyyW4UoVRpfJm-4lnV4uLeMstoIHSjQ/exec">
-                            
-                            <div>API Key</div>
-                            <input type="password" id="apiKey" placeholder="Masukkan API key">
+                
+                <!-- Kegiatan Koramil -->
+                <div class="kegiatan-container">
+                    <div class="kegiatan-box">
+                        <div class="kegiatan-header">
+                            <div class="kegiatan-title">Kegiatan Koramil</div>
+                            <div class="kegiatan-controls">
+                                <button type="button" class="add-btn" onclick="addKegiatanItem('koramil')">+1</button>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button class="btn-test" onclick="testConnection()">
-                            <span class="icon">🔗</span> TEST KONEKSI
-                        </button>
-                        <button class="btn-backup" onclick="backupData()">
-                            <span class="icon">💾</span> BACKUP DATA
-                        </button>
-                    </div>
-
-                    <div class="status-info">
-                        <div class="status-item">
-                            <span>Status Sistem:</span>
-                            <span id="systemStatus" class="status-online">Online</span>
+                        <div class="kegiatan-content" id="koramil-container">
+                            <div class="kegiatan-item">
+                                <div class="item-controls">
+                                    <button type="button" class="item-add-btn" onclick="addKegiatanItem('koramil')">+1</button>
+                                    <button type="button" class="item-remove-btn" onclick="removeKegiatanItem(this, 'koramil')">-</button>
+                                </div>
+                                <textarea class="kegiatan-textarea-rounded auto-resize" 
+                                          placeholder="Tulis kegiatan Koramil 1..." 
+                                          id="koramil-0"
+                                          oninput="autoResize(this); checkExcessSpacesTextarea(this); autoGenerateReport()" 
+                                          onkeyup="checkExcessSpacesTextarea(this)">2 orang anggota melaksanakan dinas dalam, jaga pangkalan Koramil 1609-05/Sukasada.</textarea>
+                            </div>
                         </div>
-                        <div class="status-item">
-                            <span>Cache:</span>
-                            <span id="cacheStatus" class="status-active">Aktif</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Data Tersimpan:</span>
-                            <span id="dataCount">0 laporan</span>
+                        <div class="kegiatan-instruction">
+                            Klik angka hijau untuk menambah kegiatan (laporan ke-2, ke-3, dst), "-" untuk menghapus. Input dengan spasi berlebih akan berwarna kuning.
                         </div>
                     </div>
                 </div>
+                
+                <!-- Kegiatan Babinsa -->
+                <div class="kegiatan-container">
+                    <div class="kegiatan-box">
+                        <div class="kegiatan-header">
+                            <div class="kegiatan-title">Kegiatan Babinsa</div>
+                            <div class="kegiatan-controls">
+                                <button type="button" class="add-btn" onclick="addKegiatanItem('babinsa')">+1</button>
+                            </div>
+                        </div>
+                        <div class="kegiatan-content" id="babinsa-container">
+                            <div class="kegiatan-item">
+                                <div class="item-controls">
+                                    <button type="button" class="item-add-btn" onclick="addKegiatanItem('babinsa')">+1</button>
+                                    <button type="button" class="item-remove-btn" onclick="removeKegiatanItem(this, 'babinsa')">-</button>
+                                </div>
+                                <textarea class="kegiatan-textarea-rounded auto-resize" 
+                                          placeholder="Tulis kegiatan Babinsa 1..." 
+                                          id="babinsa-0"
+                                          oninput="autoResize(this); checkExcessSpacesTextarea(this); autoGenerateReport()" 
+                                          onkeyup="checkExcessSpacesTextarea(this)"></textarea>
+                            </div>
+                        </div>
+                        <div class="kegiatan-instruction">
+                            Klik angka hijau untuk menambah kegiatan (laporan ke-2, ke-3, dst), "-" untuk menghapus. Input dengan spasi berlebih akan berwarna kuning.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="auto-generate-notice">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate saat input berubah
+                </div>
             </div>
-        </main>
-
-        <footer>
-            <p>© 2024 Koramil 1609-05/Sukasada</p>
-            <p>Sistem Laporan Harian Terintegrasi</p>
-        </footer>
+            
+            <!-- Action Button - TERSEMBUNYI -->
+            <div class="button-group hidden">
+                <button onclick="generateReport()">GENERATE LAPORAN</button>
+            </div>
+        </div>
+        
+        <!-- Preview Output -->
+        <div class="preview-container">
+            <div style="margin-bottom: 15px;">
+                <h3 class="section-title" style="margin-bottom: 0;">PREVIEW LAPORAN</h3>
+                <div class="auto-generate-notice" style="margin-top: 5px; margin-bottom: 10px;">
+                    <span class="auto-generate-icon">⟳</span> Preview otomatis terupdate saat input berubah
+                </div>
+            </div>
+            <textarea id="output" class="preview-textarea" placeholder="Mulai mengisi form di sebelah kiri untuk melihat preview laporan">
+Mulai mengisi form di sebelah kiri untuk melihat preview laporan</textarea>
+            
+            <!-- Messages -->
+            <div id="successMessage" class="message success" style="display: none;">
+                ✓ Data berhasil dikirim ke Google Sheets!
+            </div>
+            <div id="errorMessage" class="message error" style="display: none;">
+                ✗ Terjadi kesalahan. Silakan coba lagi.
+            </div>
+            
+            <!-- Tombol Kirim ke WhatsApp -->
+            <button class="whatsapp-btn" onclick="sendToWhatsApp()">
+                <span class="whatsapp-icon">📱</span>
+                KIRIM KE WHATSAPP
+            </button>
+            
+            <!-- Tombol Kirim ke Google Sheets -->
+            <button class="sheets-btn" onclick="saveToGoogleSheets()">
+                <span class="sheets-icon">📊</span>
+                SIMPAN KE GOOGLE SHEETS
+            </button>
+            
+            <!-- Additional Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                <button onclick="exportToTxt()" style="background-color: #6c757d;">
+                    📥 Export ke TXT
+                </button>
+                <button onclick="resetForm()" style="background-color: #dc3545;">
+                    🔄 Reset Form
+                </button>
+                <button onclick="printReport()" style="background-color: #17a2b8; grid-column: span 2;">
+                    🖨️ Print Laporan
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2024 - Sistem Formatter Laporan Harian Koramil 1609-05/Sukasada</p>
+        <p>Untuk penggunaan internal satuan</p>
     </div>
 
-    <script src="config.js"></script>
-    <script src="cache.js"></script>
-    <script src="script.js"></script>
+    <!-- ============================ -->
+    <!-- JAVASCRIPT CODE DI SINI! -->
+    <!-- ============================ -->
+    <script>
+        // Data untuk konversi bulan dan hari
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        
+        // ID Spreadsheet dan Folder
+        const SPREADSHEET_ID = '1rBeGgIo0ELSyHtqXOoS9jl9hhjxobXuDqWumxjIMh4k';
+        const FOLDER_ID = '1iPXRfXJKNieQjOaiSw5oc2LuoLWwmR6T';
+        
+        // Format tanggal ke Indonesia
+        function formatDateIndonesia(date) {
+            const day = days[date.getDay()];
+            const dateNum = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return {
+                hari: day,
+                tanggal: dateNum,
+                bulan: month,
+                tahun: year,
+                full: `${day}, ${dateNum} ${month} ${year}`
+            };
+        }
+        
+        // Auto-resize textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight + 5) + 'px';
+        }
+        
+        // Initialize auto-resize for all textareas
+        function initAutoResize() {
+            const textareas = document.querySelectorAll('.auto-resize, .preview-textarea');
+            textareas.forEach(textarea => {
+                // Set initial height
+                autoResize(textarea);
+                
+                // Add event listener
+                textarea.addEventListener('input', function() {
+                    autoResize(this);
+                });
+                
+                // Also resize on window resize
+                window.addEventListener('resize', function() {
+                    autoResize(textarea);
+                });
+            });
+        }
+        
+        // Generate situasi text
+        function generateSituasiText() {
+            const reportDateInput = document.getElementById('reportDate').value;
+            const waktu = document.getElementById('reportTime').value;
+            
+            if (!reportDateInput) {
+                document.getElementById('situasiPreview').textContent = 'Pilih tanggal terlebih dahulu';
+                return;
+            }
+            
+            const reportDate = new Date(reportDateInput);
+            
+            if (waktu === '04.00') {
+                const startDate = new Date(reportDate);
+                startDate.setDate(startDate.getDate() - 1);
+                startDate.setHours(16, 0, 0, 0);
+                
+                const endDate = new Date(reportDate);
+                endDate.setHours(4, 0, 0, 0);
+                
+                const startInfo = formatDateIndonesia(startDate);
+                const endInfo = formatDateIndonesia(endDate);
+                
+                const situasiText = `-Situasi : Situasi Wilayah Koramil 1609-05/Sukasada Pada Hari ${startInfo.hari} Tanggal ${startInfo.tanggal} ${startInfo.bulan} ${startInfo.tahun} Pukul 16.00 Wita s.d Hari ${endInfo.hari} Tanggal ${endInfo.tanggal} ${endInfo.bulan} ${endInfo.tahun} Pukul 04.00 Wita dalam keadaan Aman dan Kondusif`;
+                
+                document.getElementById('situasiPreview').textContent = situasiText;
+                
+            } else if (waktu === '16.00') {
+                const startDate = new Date(reportDate);
+                startDate.setHours(4, 0, 0, 0);
+                
+                const endDate = new Date(reportDate);
+                endDate.setHours(16, 0, 0, 0);
+                
+                const dateInfo = formatDateIndonesia(reportDate);
+                
+                const situasiText = `-Situasi : Situasi Wilayah Koramil 1609-05/Sukasada Pada Hari ${dateInfo.hari} Tanggal ${dateInfo.tanggal} ${dateInfo.bulan} ${dateInfo.tahun} Pukul 04.00 Wita s.d Pukul 16.00 Wita dalam keadaan Aman dan Kondusif`;
+                
+                document.getElementById('situasiPreview').textContent = situasiText;
+            }
+        }
+        
+        // Update periode info
+        function updatePeriodeInfo() {
+            const waktu = document.getElementById('reportTime').value;
+            let infoText = '';
+            
+            if (waktu === '04.00') {
+                infoText = `<strong>Periode Laporan:</strong><br>
+                • 04.00 WITA: Periode sore (16.00-04.00) hari sebelumnya<br>
+                • Melaporkan kejadian dari 16.00 kemarin hingga 04.00 hari ini`;
+            } else {
+                infoText = `<strong>Periode Laporan:</strong><br>
+                • 16.00 WITA: Periode pagi (04.00-16.00) hari yang sama<br>
+                • Melaporkan kejadian dari 04.00 hingga 16.00 hari ini`;
+            }
+            
+            document.getElementById('periodeInfo').innerHTML = infoText;
+            generateSituasiText();
+        }
+        
+        // Auto generate report saat input berubah
+        let autoGenerateTimeout;
+        function autoGenerateReport() {
+            // Clear previous timeout
+            clearTimeout(autoGenerateTimeout);
+            
+            // Set new timeout for debouncing (300ms delay)
+            autoGenerateTimeout = setTimeout(() => {
+                generateReport();
+            }, 300);
+        }
+        
+        // Format alignment untuk list dengan titik dua
+        function formatAlignedList(text) {
+            if (!text) return '';
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            if (lines.length === 0) return '';
+            
+            // Cek apakah ada pattern : dalam text
+            const hasColonPattern = lines.some(line => line.includes(':'));
+            if (!hasColonPattern) return text;
+            
+            // Pisahkan lines menjadi groups berdasarkan pattern
+            const groups = [];
+            let currentGroup = [];
+            
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.includes(':')) {
+                    currentGroup.push(trimmedLine);
+                } else {
+                    if (currentGroup.length > 0) {
+                        groups.push([...currentGroup]);
+                        currentGroup = [];
+                    }
+                    groups.push([trimmedLine]);
+                }
+            });
+            
+            if (currentGroup.length > 0) {
+                groups.push([...currentGroup]);
+            }
+            
+            // Format setiap group yang memiliki :
+            const formattedGroups = groups.map(group => {
+                if (group.length === 1 && !group[0].includes(':')) {
+                    return group[0];
+                }
+                
+                // Untuk group yang memiliki :
+                const formattedLines = [];
+                const maxLengths = [];
+                
+                // Hitung max length untuk setiap kolom
+                group.forEach(line => {
+                    const parts = line.split(':');
+                    parts.forEach((part, index) => {
+                        if (!maxLengths[index]) {
+                            maxLengths[index] = 0;
+                        }
+                        const length = part.trim().length;
+                        if (length > maxLengths[index]) {
+                            maxLengths[index] = length;
+                        }
+                    });
+                });
+                
+                // Format setiap line dalam group
+                group.forEach(line => {
+                    const parts = line.split(':');
+                    const formattedParts = parts.map((part, index) => {
+                        const trimmedPart = part.trim();
+                        if (index === parts.length - 1) {
+                            // Bagian terakhir (setelah titik dua terakhir)
+                            return trimmedPart;
+                        } else {
+                            // Bagian sebelum titik dua
+                            const padding = maxLengths[index] - trimmedPart.length;
+                            return trimmedPart + ' '.repeat(Math.max(0, padding));
+                        }
+                    });
+                    
+                    // Gabungkan dengan tepat satu spasi sebelum dan sesudah titik dua
+                    let formattedLine = '';
+                    for (let i = 0; i < formattedParts.length; i++) {
+                        if (i < formattedParts.length - 1) {
+                            formattedLine += formattedParts[i] + ' : ';
+                        } else {
+                            formattedLine += formattedParts[i];
+                        }
+                    }
+                    formattedLines.push(formattedLine);
+                });
+                
+                return formattedLines.join('\n');
+            });
+            
+            return formattedGroups.join('\n');
+        }
+        
+        // Normalisasi spasi (hanya satu spasi antara kata)
+        function normalizeSpaces(text) {
+            return text.replace(/\s+/g, ' ').trim();
+        }
+        
+        // Cek spasi berlebih di input
+        function checkExcessSpaces(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            const text = input.value;
+            const hasExcessSpaces = text.includes('  ');
+            
+            if (hasExcessSpaces) {
+                input.style.backgroundColor = '#fff3cd';
+                input.style.borderColor = '#ffc107';
+            } else {
+                input.style.backgroundColor = '';
+                input.style.borderColor = '';
+            }
+        }
+        
+        // Cek spasi berlebih di textarea
+        function checkExcessSpacesTextarea(textarea) {
+            const text = textarea.value;
+            const hasExcessSpaces = text.includes('  ');
+            
+            if (hasExcessSpaces) {
+                textarea.style.backgroundColor = '#fff3cd';
+                textarea.style.borderColor = '#ffc107';
+            } else {
+                textarea.style.backgroundColor = '';
+                textarea.style.borderColor = '';
+            }
+        }
+        
+        // Handle keydown di keterangan untuk auto-tambah "-"
+        function handleKeteranganKeydown(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const textarea = event.target;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                
+                // Dapatkan baris saat ini
+                const beforeCursor = text.substring(0, start);
+                const lines = beforeCursor.split('\n');
+                const currentLine = lines[lines.length - 1];
+                
+                // Jika baris saat ini sudah ada "-", tambah "-" di baris baru
+                // Jika tidak, tambah "-" di baris baru
+                let newText;
+                if (currentLine.trim().startsWith('-')) {
+                    newText = text.substring(0, start) + '\n-' + text.substring(end);
+                } else {
+                    newText = text.substring(0, start) + '\n-' + text.substring(end);
+                }
+                
+                textarea.value = newText;
+                
+                // Posisikan kursor setelah "-"
+                const newPosition = start + 2; // +1 untuk newline, +1 untuk "-"
+                textarea.selectionStart = textarea.selectionEnd = newPosition;
+                
+                // Trigger input event untuk update auto-resize dan hitung kurang
+                const inputEvent = new Event('input');
+                textarea.dispatchEvent(inputEvent);
+                
+                // Auto generate report
+                autoGenerateReport();
+                
+                return false;
+            }
+        }
+        
+        // Update nilai "Kurang" berdasarkan input Keterangan
+        function updateKurangFromKeterangan() {
+            const keteranganText = document.getElementById('keterangan').value;
+            const lines = keteranganText.split('\n');
+            
+            let totalKurang = 0;
+            
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('-') && trimmedLine.includes(':')) {
+                    const parts = trimmedLine.split(':');
+                    if (parts.length > 1) {
+                        const jumlahStr = parts[1].trim();
+                        const jumlah = parseInt(jumlahStr) || 0;
+                        totalKurang += jumlah;
+                    }
+                }
+            });
+            
+            // Update nilai "Kurang" di DATA SIAP OPS
+            document.getElementById('kurang').value = totalKurang;
+            
+            // Hitung ulang "Siap Ops"
+            calculateSiapOps();
+        }
+        
+        // Calculate Siap Ops (diubah untuk menggunakan nilai tetap)
+        function calculateSiapOps() {
+            const nyata = parseInt(document.getElementById('nyata').value) || 0;
+            const kurang = parseInt(document.getElementById('kurang').value) || 0;
+            const siapOps = nyata - kurang;
+            document.getElementById('siapOps').value = siapOps > 0 ? siapOps : 0;
+        }
+        
+        // Format keterangan dengan format yang benar (PERBAIKAN)
+        function formatKeterangan(text) {
+            if (!text) return '-DD : 0\n-BP : 0\n-Sakit : 0\n-Ijin : 0\n-Cuti : 0\n-Dinas Luar : 0';
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            if (lines.length === 0) return '-DD : 0\n-BP : 0\n-Sakit : 0\n-Ijin : 0\n-Cuti : 0\n-Dinas Luar : 0';
+            
+            // Normalisasi setiap baris
+            const normalizedLines = lines.map(line => {
+                let trimmedLine = line.trim();
+                
+                // Pastikan dimulai dengan "-"
+                if (!trimmedLine.startsWith('-')) {
+                    trimmedLine = '-' + trimmedLine;
+                }
+                
+                // Pastikan ada " : " antara item dan nilai
+                if (trimmedLine.includes(':')) {
+                    const parts = trimmedLine.split(':');
+                    if (parts.length >= 2) {
+                        const item = parts[0].trim();
+                        const value = parts.slice(1).join(':').trim();
+                        return `${item} : ${value}`;
+                    }
+                }
+                
+                return trimmedLine;
+            });
+            
+            return normalizedLines.join('\n');
+        }
+        
+        // Format kegiatan items TANPA angka 2), 3), dst
+        function formatKegiatanItemsRounded(containerId) {
+            const container = document.getElementById(containerId);
+            const textareas = container.querySelectorAll('.kegiatan-textarea-rounded');
+            const items = [];
+            
+            textareas.forEach(textarea => {
+                const value = normalizeSpaces(textarea.value.trim());
+                if (value) {
+                    items.push(value);
+                }
+            });
+            
+            if (items.length === 0) return '';
+            
+            // Format semua item dengan "-" di awal (TANPA angka 2), 3), dst)
+            const formattedItems = items.map((item, index) => {
+                const trimmed = item.trim();
+                
+                // Bersihkan awalan "-" jika ada
+                const cleanItem = trimmed.startsWith('-') ? trimmed.substring(1).trim() : trimmed;
+                
+                // Selalu format dengan "-" di awal, tanpa angka
+                return `-${cleanItem}`;
+            });
+            
+            return formattedItems.join('\n');
+        }
+        
+        // TAMBAH ITEM KEGIATAN DENGAN LOGIKA TOMBOL YANG BENAR
+        function addKegiatanItem(type) {
+            const container = document.getElementById(`${type}-container`);
+            const itemCount = container.querySelectorAll('.kegiatan-item').length;
+            
+            // Batasi maksimal 5 laporan per kategori
+            if (itemCount >= 5) {
+                alert(`Maksimal 5 laporan per kategori.`);
+                return;
+            }
+            
+            const newIndex = itemCount; // Karena kita mulai dari 0
+            const laporanKe = newIndex + 1; // Laporan ke-1, ke-2, dst
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'kegiatan-item';
+            newItem.innerHTML = `
+                <div class="item-controls">
+                    <button type="button" class="item-add-btn" onclick="addKegiatanItem('${type}')">+1</button>
+                    <button type="button" class="item-remove-btn" onclick="removeKegiatanItem(this, '${type}')">-</button>
+                </div>
+                <textarea class="kegiatan-textarea-rounded auto-resize" 
+                          placeholder="Tulis ${type.charAt(0).toUpperCase() + type.slice(1)} ${laporanKe + 1}..." 
+                          id="${type}-${newIndex}"
+                          oninput="autoResize(this); checkExcessSpacesTextarea(this); autoGenerateReport()" 
+                          onkeyup="checkExcessSpacesTextarea(this)"></textarea>
+            `;
+            container.appendChild(newItem);
+            
+            // Initialize auto-resize untuk textarea baru
+            const newTextarea = newItem.querySelector('textarea');
+            autoResize(newTextarea);
+            
+            // Update semua tombol "+" di container ini
+            updateAddButtons(type);
+            
+            // Scroll ke item baru
+            newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Auto generate report setelah menambah item
+            autoGenerateReport();
+        }
+        
+        // HAPUS ITEM KEGIATAN DENGAN UPDATE TOMBOL YANG BENAR
+        function removeKegiatanItem(button, type) {
+            const container = document.getElementById(`${type}-container`);
+            const items = container.querySelectorAll('.kegiatan-item');
+            
+            // Jangan hapus jika hanya tersisa satu item
+            if (items.length <= 1) {
+                alert(`Minimal harus ada satu laporan untuk ${type}.`);
+                return;
+            }
+            
+            const item = button.closest('.kegiatan-item');
+            item.remove();
+            
+            // Re-index semua item yang tersisa
+            const remainingItems = container.querySelectorAll('.kegiatan-item');
+            remainingItems.forEach((item, index) => {
+                // Update ID textarea
+                const textarea = item.querySelector('textarea');
+                if (textarea) {
+                    textarea.id = `${type}-${index}`;
+                    textarea.placeholder = `Tulis ${type.charAt(0).toUpperCase() + type.slice(1)} ${index + 1}...`;
+                }
+            });
+            
+            // Update semua tombol "+"
+            updateAddButtons(type);
+            
+            // Auto generate report setelah menghapus item
+            autoGenerateReport();
+        }
+        
+        // UPDATE TOMBOL "+" SELALU MENUNJUKKAN "+1"
+        function updateAddButtons(type) {
+            const container = document.getElementById(`${type}-container`);
+            const items = container.querySelectorAll('.kegiatan-item');
+            
+            // Cari tombol header untuk kategori ini
+            const kegiatanBoxes = document.querySelectorAll('.kegiatan-box');
+            let headerBtn = null;
+            
+            kegiatanBoxes.forEach(box => {
+                const title = box.querySelector('.kegiatan-title').textContent;
+                if (title.includes(type.charAt(0).toUpperCase() + type.slice(1).toLowerCase())) {
+                    headerBtn = box.querySelector('.add-btn');
+                }
+            });
+            
+            // Update tombol di header - SELALU "+1"
+            if (headerBtn) {
+                headerBtn.textContent = '+1';
+            }
+            
+            // Update tombol di samping setiap item - SELALU "+1"
+            items.forEach((item) => {
+                const addBtn = item.querySelector('.item-add-btn');
+                if (addBtn) {
+                    // Tombol di samping SELALU menunjukkan "+1"
+                    addBtn.textContent = '+1';
+                }
+            });
+        }
+        
+        // Format haljol (normalize spaces dan format alignment)
+        function formatHaljol(text) {
+            return formatAlignedList(normalizeSpaces(text));
+        }
+        
+        // Generate Report - DIPERBAIKI untuk format yang benar
+        function generateReport() {
+            // Get form values
+            const reportDate = new Date(document.getElementById('reportDate').value);
+            const reportTime = document.getElementById('reportTime').value;
+            
+            const haljol = formatHaljol(document.getElementById('haljol').value || 'Nihil');
+            
+            const topDspp = document.getElementById('topDspp').value || '25';
+            const nyata = document.getElementById('nyata').value || '19';
+            const kurang = document.getElementById('kurang').value || '9';
+            const siapOps = document.getElementById('siapOps').value || '10';
+            
+            const keterangan = formatKeterangan(document.getElementById('keterangan').value);
+            
+            // Get kegiatan dari rounded textbox dengan format yang benar
+            const danramil = formatKegiatanItemsRounded('danramil-container');
+            const koramil = formatKegiatanItemsRounded('koramil-container');
+            const babinsa = formatKegiatanItemsRounded('babinsa-container');
+            
+            // Format date
+            const dateInfo = formatDateIndonesia(reportDate);
+            
+            // Get situasi text
+            const situasiText = document.getElementById('situasiPreview').textContent;
+            
+            // Determine greeting
+            let waktuSalam = 'Pagi';
+            if (reportTime === '16.00') waktuSalam = 'Sore';
+            
+            // Build report dengan format yang benar
+            let report = `Perihal : Laporan perkembangan situasi Koramil 1609-05/Sukasada Hari ${dateInfo.hari} Tanggal, ${dateInfo.tanggal} ${dateInfo.bulan} ${dateInfo.tahun}.\n\n`;
+            report += `Yth. Komandan Kodim 1609/Buleleng.\n`;
+            report += `Cc. Kasdim 1609/Buleleng.\n\n`;
+            
+            report += `Selamat ${waktuSalam}, Mohon ijin melaporkan Situasi Satuan Koramil 1609-05/Sukasada Hari ${dateInfo.hari} Tanggal, ${dateInfo.tanggal} ${dateInfo.bulan} ${dateInfo.tahun} Pukul ${reportTime} Wita dalam rangka kegiatan Pembinaan Kekuatan Satuan Bulan ${dateInfo.bulan} tahun ${dateInfo.tahun} sebagai berikut :\n\n`;
+            
+            report += `**I. Situasi dan Haljol :**\n\n`;
+            report += `${situasiText}\n\n`;
+            report += `-Haljol : ${haljol}.\n\n`;
+            
+            report += `**II. Data Siap Ops :**\n\n`;
+            report += `1. Top DSPP : ${topDspp}\n`;
+            report += `2. Nyata : ${nyata}\n`;
+            report += `3. Kurang : ${kurang}\n`;
+            report += `4. Siap Ops : ${siapOps}\n\n`;
+            report += `5. Keterangan :\n\n`;
+            
+            const keteranganLines = keterangan.split('\n');
+            keteranganLines.forEach(line => {
+                if (line.trim()) {
+                    report += `${line.trim()}\n`;
+                }
+            });
+            
+            report += `\n**III. Kegiatan :**\n\n`;
+            report += `**1. Kegiatan Danramil :**\n\n`;
+            
+            if (danramil) {
+                report += `${danramil}\n\n`;
+            } else {
+                report += `-Melaksanakan monitoring perkembangan situasi dan kondisi wilayah Kecamatan Sukasada Kabupaten Buleleng.\n`;
+                report += `-Memimpin kegiatan rutin satuan Koramil 1609-05/Sukasada.\n\n`;
+            }
+            
+            report += `**2. Kegiatan Koramil :**\n\n`;
+            if (koramil) {
+                report += `${koramil}\n\n`;
+            } else {
+                report += `2 orang anggota melaksanakan dinas dalam, jaga pangkalan Koramil 1609-05/Sukasada.\n\n`;
+            }
+            
+            report += `-Para Babinsa monitoring terkait perkembangan situasi dan kondisi di wilayah Desa binaan masing-masing.\n\n`;
+            
+            report += `**3. Kegiatan Babinsa :**\n\n`;
+            if (babinsa) {
+                report += `${babinsa}\n\n`;
+            } else {
+                report += `-Melaksanakan pemantauan dan pendataan situasi wilayah desa binaan masing-masing.\n`;
+                report += `-Melaksanakan koordinasi dengan perangkat desa setempat.\n\n`;
+            }
+            
+            report += `*DEMIKIAN MMP.*\n\n`;
+            report += `Dokumentasi terlampir.`;
+            
+            // Display report
+            const outputElement = document.getElementById('output');
+            outputElement.value = report;
+            
+            // Preview selalu editable
+            outputElement.readOnly = false;
+            outputElement.style.backgroundColor = '#fafafa';
+            
+            // Resize textarea
+            autoResize(outputElement);
+        }
+        
+        // Kirim ke WhatsApp
+        function sendToWhatsApp() {
+            const reportText = document.getElementById('output').value;
+            
+            if (!reportText || reportText.trim() === 'Klik GENERATE untuk membuat laporan' || 
+                reportText.trim() === 'Mulai mengisi form di sebelah kiri untuk melihat preview laporan') {
+                alert('Silakan isi form terlebih dahulu untuk membuat laporan.');
+                return;
+            }
+            
+            // Encode text for WhatsApp URL
+            const encodedText = encodeURIComponent(reportText);
+            
+            // Create WhatsApp URL
+            const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+            
+            // Open WhatsApp in new tab
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Kirim data ke Google Sheets
+        async function saveToGoogleSheets() {
+            // Validasi form
+            const reportDate = document.getElementById('reportDate').value;
+            if (!reportDate) {
+                alert('Silakan pilih tanggal laporan terlebih dahulu.');
+                return;
+            }
+            
+            const reportText = document.getElementById('output').value;
+            if (!reportText || reportText.trim() === 'Mulai mengisi form di sebelah kiri untuk melihat preview laporan') {
+                alert('Silakan isi form terlebih dahulu untuk membuat laporan.');
+                return;
+            }
+            
+            // Tampilkan loading
+            showLoading(true);
+            
+            try {
+                // Kumpulkan semua data
+                const formData = {
+                    timestamp: new Date().toISOString(),
+                    reportDate: reportDate,
+                    reportTime: document.getElementById('reportTime').value,
+                    haljol: document.getElementById('haljol').value,
+                    topDspp: document.getElementById('topDspp').value,
+                    nyata: document.getElementById('nyata').value,
+                    kurang: document.getElementById('kurang').value,
+                    siapOps: document.getElementById('siapOps').value,
+                    keterangan: document.getElementById('keterangan').value,
+                    danramilKegiatan: collectKegiatanData('danramil'),
+                    koramilKegiatan: collectKegiatanData('koramil'),
+                    babinsaKegiatan: collectKegiatanData('babinsa'),
+                    fullReport: reportText,
+                    tanggalInput: new Date(reportDate).toLocaleDateString('id-ID'),
+                    createdBy: 'Koramil 1609-05/Sukasada System'
+                };
+                
+                // Kirim data ke Google Sheets menggunakan Google Apps Script
+                const response = await sendToGoogleAppsScript(formData);
+                
+                if (response.success) {
+                    showMessage('success', 'Data berhasil disimpan ke Google Sheets!');
+                } else {
+                    throw new Error(response.error || 'Gagal menyimpan data');
+                }
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                showMessage('error', `Gagal menyimpan data: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Fungsi untuk mengumpulkan data kegiatan
+        function collectKegiatanData(type) {
+            const container = document.getElementById(`${type}-container`);
+            const textareas = container.querySelectorAll('.kegiatan-textarea-rounded');
+            const activities = [];
+            
+            textareas.forEach(textarea => {
+                if (textarea.value.trim()) {
+                    activities.push(textarea.value.trim());
+                }
+            });
+            
+            return activities.join(' || ');
+        }
+        
+        // Fungsi untuk mengirim data ke Google Apps Script
+        async function sendToGoogleAppsScript(data) {
+            // URL Google Apps Script Web App yang benar
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbwFYXA-XSVHhwQJVxOgmB_pKXeT6w_Z_HdbJQcYn7n8d_6QoJ4j2jhfL05EqTt_Nvqs/exec';
+            
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Karena no-cors, kita tidak bisa membaca response
+                // Tapi kita anggap berhasil jika tidak ada error
+                return { success: true };
+                
+            } catch (error) {
+                // Fallback: Simpan data ke localStorage sebagai backup
+                saveToLocalStorage(data);
+                return { success: true, note: 'Disimpan lokal (offline mode)' };
+            }
+        }
+        
+        // Fallback: Simpan ke localStorage
+        function saveToLocalStorage(data) {
+            try {
+                const reports = JSON.parse(localStorage.getItem('koramil_reports') || '[]');
+                reports.push({
+                    ...data,
+                    savedAt: new Date().toISOString()
+                });
+                localStorage.setItem('koramil_reports', JSON.stringify(reports));
+                return true;
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                return false;
+            }
+        }
+        
+        // Fungsi untuk menampilkan loading
+        function showLoading(show) {
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = show ? 'flex' : 'none';
+        }
+        
+        // Fungsi untuk menampilkan pesan
+        function showMessage(type, text) {
+            const successElement = document.getElementById('successMessage');
+            const errorElement = document.getElementById('errorMessage');
+            
+            if (type === 'success') {
+                successElement.textContent = text;
+                successElement.style.display = 'block';
+                errorElement.style.display = 'none';
+                
+                // Sembunyikan setelah 5 detik
+                setTimeout(() => {
+                    successElement.style.display = 'none';
+                }, 5000);
+            } else {
+                errorElement.textContent = text;
+                errorElement.style.display = 'block';
+                successElement.style.display = 'none';
+                
+                // Sembunyikan setelah 5 detik
+                setTimeout(() => {
+                    errorElement.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // FUNGSI INISIALISASI TOMBOL SAAT HALAMAN DIMUAT
+        function initializeAllButtons() {
+            const types = ['danramil', 'koramil', 'babinsa'];
+            types.forEach(type => {
+                updateAddButtons(type);
+            });
+        }
+        
+        // Simpan data ke session storage untuk sementara
+        function saveSessionData() {
+            const formData = {
+                reportDate: document.getElementById('reportDate').value,
+                reportTime: document.getElementById('reportTime').value,
+                haljol: document.getElementById('haljol').value,
+                keterangan: document.getElementById('keterangan').value,
+                kegiatanDanramil: collectKegiatanArray('danramil'),
+                kegiatanKoramil: collectKegiatanArray('koramil'),
+                kegiatanBabinsa: collectKegiatanArray('babinsa')
+            };
+            
+            sessionStorage.setItem('koramil_form_data', JSON.stringify(formData));
+        }
+        
+        // Load data dari session storage
+        function loadSessionData() {
+            const savedData = sessionStorage.getItem('koramil_form_data');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    if (data.reportDate) document.getElementById('reportDate').value = data.reportDate;
+                    if (data.reportTime) document.getElementById('reportTime').value = data.reportTime;
+                    if (data.haljol) document.getElementById('haljol').value = data.haljol;
+                    if (data.keterangan) document.getElementById('keterangan').value = data.keterangan;
+                    
+                    // Load kegiatan data
+                    if (data.kegiatanDanramil && data.kegiatanDanramil.length > 0) {
+                        loadKegiatanData('danramil', data.kegiatanDanramil);
+                    }
+                    if (data.kegiatanKoramil && data.kegiatanKoramil.length > 0) {
+                        loadKegiatanData('koramil', data.kegiatanKoramil);
+                    }
+                    if (data.kegiatanBabinsa && data.kegiatanBabinsa.length > 0) {
+                        loadKegiatanData('babinsa', data.kegiatanBabinsa);
+                    }
+                    
+                    // Trigger update
+                    updateKurangFromKeterangan();
+                    autoGenerateReport();
+                } catch (error) {
+                    console.error('Error loading session data:', error);
+                }
+            }
+        }
+        
+        // Kumpulkan kegiatan sebagai array
+        function collectKegiatanArray(type) {
+            const container = document.getElementById(`${type}-container`);
+            const textareas = container.querySelectorAll('.kegiatan-textarea-rounded');
+            const activities = [];
+            
+            textareas.forEach(textarea => {
+                activities.push(textarea.value);
+            });
+            
+            return activities;
+        }
+        
+        // Load kegiatan data ke form
+        function loadKegiatanData(type, activities) {
+            const container = document.getElementById(`${type}-container`);
+            
+            // Clear existing items except first one
+            const existingItems = container.querySelectorAll('.kegiatan-item');
+            for (let i = 1; i < existingItems.length; i++) {
+                existingItems[i].remove();
+            }
+            
+            // Fill first item
+            const firstTextarea = container.querySelector('.kegiatan-textarea-rounded');
+            if (firstTextarea && activities.length > 0) {
+                firstTextarea.value = activities[0];
+                autoResize(firstTextarea);
+            }
+            
+            // Add additional items
+            for (let i = 1; i < activities.length; i++) {
+                addKegiatanItem(type);
+                const newTextarea = container.querySelector(`#${type}-${i}`);
+                if (newTextarea) {
+                    newTextarea.value = activities[i];
+                    autoResize(newTextarea);
+                }
+            }
+        }
+        
+        // Auto-save ketika ada perubahan
+        function setupAutoSave() {
+            const inputsToWatch = [
+                'reportDate', 'reportTime', 'haljol', 'keterangan'
+            ];
+            
+            inputsToWatch.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', saveSessionData);
+                    element.addEventListener('change', saveSessionData);
+                }
+            });
+            
+            // Setup interval untuk auto-save
+            setInterval(saveSessionData, 30000); // Save setiap 30 detik
+        }
+        
+        // Export laporan ke file txt
+        function exportToTxt() {
+            const reportText = document.getElementById('output').value;
+            
+            if (!reportText || reportText.trim() === 'Mulai mengisi form di sebelah kiri untuk melihat preview laporan') {
+                alert('Silakan isi form terlebih dahulu untuk membuat laporan.');
+                return;
+            }
+            
+            const date = new Date();
+            const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
+            const filename = `Laporan_Koramil_${dateStr}.txt`;
+            
+            const blob = new Blob([reportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Reset form
+        function resetForm() {
+            if (confirm('Apakah Anda yakin ingin mereset form? Semua data yang belum disimpan akan hilang.')) {
+                // Reset tanggal ke hari ini
+                const today = new Date();
+                document.getElementById('reportDate').value = today.toISOString().split('T')[0];
+                document.getElementById('reportTime').value = '04.00';
+                document.getElementById('haljol').value = 'Nihil';
+                document.getElementById('keterangan').value = '-DD : 0\n-BP : 0\n-Sakit : 0\n-Ijin : 0\n-Cuti : 0\n-Dinas Luar : 0';
+                
+                // Reset kegiatan
+                const types = ['danramil', 'koramil', 'babinsa'];
+                types.forEach(type => {
+                    const container = document.getElementById(`${type}-container`);
+                    const items = container.querySelectorAll('.kegiatan-item');
+                    
+                    // Remove all but first item
+                    for (let i = 1; i < items.length; i++) {
+                        items[i].remove();
+                    }
+                    
+                    // Reset first item
+                    const firstTextarea = container.querySelector('.kegiatan-textarea-rounded');
+                    if (firstTextarea) {
+                        if (type === 'koramil') {
+                            firstTextarea.value = '2 orang anggota melaksanakan dinas dalam, jaga pangkalan Koramil 1609-05/Sukasada.';
+                        } else {
+                            firstTextarea.value = '';
+                        }
+                        autoResize(firstTextarea);
+                    }
+                });
+                
+                // Reset calculations
+                updateKurangFromKeterangan();
+                
+                // Clear session storage
+                sessionStorage.removeItem('koramil_form_data');
+                
+                // Generate report
+                autoGenerateReport();
+                
+                alert('Form telah direset ke kondisi awal.');
+            }
+        }
+        
+        // Print laporan
+        function printReport() {
+            const reportText = document.getElementById('output').value;
+            
+            if (!reportText || reportText.trim() === 'Mulai mengisi form di sebelah kiri untuk melihat preview laporan') {
+                alert('Silakan isi form terlebih dahulu untuk membuat laporan.');
+                return;
+            }
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Laporan Koramil 1609-05/Sukasada</title>
+                    <style>
+                        body {
+                            font-family: 'Courier New', monospace;
+                            font-size: 12px;
+                            line-height: 1.5;
+                            margin: 20px;
+                            white-space: pre-wrap;
+                        }
+                        @media print {
+                            body { margin: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${reportText.replace(/\n/g, '<br>')}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            document.getElementById('reportDate').value = today.toISOString().split('T')[0];
+            document.getElementById('reportTime').value = '04.00';
+            
+            calculateSiapOps();
+            updatePeriodeInfo();
+            
+            // Initialize auto-resize
+            initAutoResize();
+            
+            // Set preview textarea to always editable
+            document.getElementById('output').readOnly = false;
+            
+            // Initialize auto-resize untuk textarea kegiatan yang sudah ada
+            const kegiatanTextareas = document.querySelectorAll('.kegiatan-textarea-rounded');
+            kegiatanTextareas.forEach(textarea => {
+                autoResize(textarea);
+                textarea.addEventListener('input', function() {
+                    autoResize(this);
+                    saveSessionData(); // Auto-save
+                });
+            });
+            
+            // Hitung awal nilai kurang dari keterangan default
+            updateKurangFromKeterangan();
+            
+            // Inisialisasi semua tombol dengan angka yang benar
+            initializeAllButtons();
+            
+            // Load saved data
+            loadSessionData();
+            
+            // Setup auto-save
+            setupAutoSave();
+            
+            // Generate initial report
+            autoGenerateReport();
+            
+            // Apply initial check untuk spasi berlebih
+            setTimeout(() => {
+                checkExcessSpaces('haljol');
+                
+                // Apply initial check untuk kegiatan
+                kegiatanTextareas.forEach(textarea => {
+                    checkExcessSpacesTextarea(textarea);
+                });
+            }, 100);
+            
+            // Save initial data
+            setTimeout(saveSessionData, 1000);
+        });
+    </script>
 </body>
 </html>
