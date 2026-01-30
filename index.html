@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1e3a8a">
+    <title>SISTEM LAPORAN KORAMIL 1609-05/Sukasada</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div>Memuat...</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>📋 SISTEM LAPORAN HARIAN KORAMIL</h1>
+            <h2>Koramil 1609-05/Sukasada - Format Laporan Terstandar</h2>
+            <div class="version">Versi 3.0</div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab active" data-tab="laporan">📝 LAPORAN</button>
+            <button class="tab" data-tab="database">🗄️ DATABASE</button>
+            <button class="tab" data-tab="config">⚙️ KONFIG</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- TAB LAPORAN -->
+            <div id="laporan" class="tab-content active">
+                <div class="form-section">
+                    <h3><span class="icon">📋</span> FORM INPUT LAPORAN</h3>
+                    
+                    <div class="form-group">
+                        <label>WAKTU LAPORAN</label>
+                        <div class="row">
+                            <div>
+                                <label>Tanggal</label>
+                                <input type="date" id="reportDate" oninput="updateReport()">
+                            </div>
+                            <div>
+                                <label>Waktu</label>
+                                <select id="reportTime" onchange="updateReport()">
+                                    <option value="04.00">04.00 WITA</option>
+                                    <option value="16.00">16.00 WITA</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="info-box" id="periodeInfo">
+                            Periode laporan akan tampil di sini
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>SITUASI DAN HALJOL</label>
+                        <div class="info-box" id="situasiPreview">
+                            Situasi akan tampil otomatis
+                        </div>
+                        <input type="text" id="haljol" value="Nihil" placeholder="Haljol" oninput="updateReport()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>DATA SIAP OPS</label>
+                        <div class="data-grid">
+                            <div>Top DSPP</div>
+                            <input type="number" id="topDspp" value="25" readonly>
+                            
+                            <div>Nyata</div>
+                            <input type="number" id="nyata" value="19" readonly>
+                            
+                            <div>Kurang</div>
+                            <input type="number" id="kurang" value="9">
+                            
+                            <div>Siap Ops</div>
+                            <input type="number" id="siapOps" value="10" readonly>
+                        </div>
+                        <div class="note">
+                            <span class="icon">⟳</span> Nilai "Kurang" terupdate otomatis dari Keterangan
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>KETERANGAN</label>
+                        <textarea id="keterangan" 
+                                  onkeydown="handleKeteranganEnter(event)"
+                                  oninput="updateKurang(); updateReport()">-DD : 0
+-BP : 0
+-Sakit : 0
+-Ijin : 0
+-Cuti : 0
+-Dinas Luar : 0</textarea>
+                        <div class="note">
+                            <span class="icon">📝</span> Format: -Item : Jumlah (Enter untuk baris baru)
+                        </div>
+                    </div>
+
+                    <!-- KEGIATAN DANRAMIL -->
+                    <div class="activity-box">
+                        <div class="activity-header">
+                            <h4>KEGIATAN DANRAMIL</h4>
+                            <button class="btn-add" onclick="addActivity('danramil')">+</button>
+                        </div>
+                        <div id="danramil-container">
+                            <div class="activity-item">
+                                <div class="item-controls">
+                                    <button class="btn-add-small" onclick="addActivity('danramil')">+</button>
+                                    <button class="btn-remove-small" onclick="removeActivity(this, 'danramil')">−</button>
+                                </div>
+                                <textarea class="activity-input" placeholder="Tulis kegiatan Danramil..." oninput="updateReport()"></textarea>
+                            </div>
+                        </div>
+                        <div class="note">
+                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
+                        </div>
+                    </div>
+
+                    <!-- KEGIATAN KORAMIL -->
+                    <div class="activity-box">
+                        <div class="activity-header">
+                            <h4>KEGIATAN KORAMIL</h4>
+                            <button class="btn-add" onclick="addActivity('koramil')">+</button>
+                        </div>
+                        <div id="koramil-container">
+                            <div class="activity-item">
+                                <div class="item-controls">
+                                    <button class="btn-add-small" onclick="addActivity('koramil')">+</button>
+                                    <button class="btn-remove-small" onclick="removeActivity(this, 'koramil')">−</button>
+                                </div>
+                                <textarea class="activity-input" placeholder="Tulis kegiatan Koramil..." oninput="updateReport()">2 orang anggota melaksanakan dinas dalam, jaga pangkalan Koramil 1609-05/Sukasada.</textarea>
+                            </div>
+                        </div>
+                        <div class="note">
+                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
+                        </div>
+                    </div>
+
+                    <!-- KEGIATAN BABINSA -->
+                    <div class="activity-box">
+                        <div class="activity-header">
+                            <h4>KEGIATAN BABINSA</h4>
+                            <button class="btn-add" onclick="addActivity('babinsa')">+</button>
+                        </div>
+                        <div id="babinsa-container">
+                            <div class="activity-item">
+                                <div class="item-controls">
+                                    <button class="btn-add-small" onclick="addActivity('babinsa')">+</button>
+                                    <button class="btn-remove-small" onclick="removeActivity(this, 'babinsa')">−</button>
+                                </div>
+                                <textarea class="activity-input" placeholder="Tulis kegiatan Babinsa..." oninput="updateReport()"></textarea>
+                            </div>
+                        </div>
+                        <div class="note">
+                            <span class="icon">🔄</span> Klik + untuk tambah, − untuk hapus
+                        </div>
+                    </div>
+
+                    <!-- TOMBOL ACTION -->
+                    <div class="action-buttons">
+                        <button class="btn-save" onclick="saveLaporan()">
+                            <span class="icon">💾</span> SIMPAN LAPORAN
+                        </button>
+                        <button class="btn-whatsapp" onclick="kirimWhatsApp()">
+                            <span class="icon">📱</span> KIRIM WHATSAPP
+                        </button>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h3><span class="icon">👁️</span> PREVIEW LAPORAN</h3>
+                    <div class="note">
+                        <span class="icon">⟳</span> Preview otomatis terupdate
+                    </div>
+                    <textarea id="output" class="preview-output" readonly></textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-save" onclick="saveLaporan()">
+                            <span class="icon">💾</span> SIMPAN LAPORAN
+                        </button>
+                        <button class="btn-whatsapp" onclick="kirimWhatsApp()">
+                            <span class="icon">📱</span> KIRIM WHATSAPP
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB DATABASE -->
+            <div id="database" class="tab-content">
+                <div class="db-container">
+                    <h3><span class="icon">🗄️</span> DATABASE LAPORAN</h3>
+                    
+                    <div class="filter-row">
+                        <select id="filterTahun">
+                            <option value="">Pilih Tahun</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="Cari laporan...">
+                        <button class="btn-refresh" onclick="loadDatabase()">🔄 Refresh</button>
+                    </div>
+
+                    <div id="databaseTable" class="db-table">
+                        <div class="empty-state">
+                            <span class="icon">📭</span>
+                            <p>Belum ada data laporan</p>
+                            <button onclick="loadDatabase()">Muat Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB KONFIG -->
+            <div id="config" class="tab-content">
+                <div class="config-container">
+                    <h3><span class="icon">⚙️</span> KONFIGURASI SISTEM</h3>
+                    
+                    <div class="form-group">
+                        <label>API ENDPOINTS</label>
+                        <div class="config-grid">
+                            <div>API Write URL</div>
+                            <input type="text" id="apiWriteUrl" placeholder="https://script.google.com/macros/s/AKfycbwpPguPht8jgl7nyXucPZUant78RlioqtBOU1CYyyW4UoVRpfJm-4lnV4uLeMstoIHSjQ/exec">
+                            
+                            <div>API Read URL</div>
+                            <input type="text" id="apiReadUrl" placeholder="https://script.google.com/macros/s/AKfycbwpPguPht8jgl7nyXucPZUant78RlioqtBOU1CYyyW4UoVRpfJm-4lnV4uLeMstoIHSjQ/exec">
+                            
+                            <div>API Key</div>
+                            <input type="password" id="apiKey" placeholder="Masukkan API key">
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-test" onclick="testConnection()">
+                            <span class="icon">🔗</span> TEST KONEKSI
+                        </button>
+                        <button class="btn-backup" onclick="backupData()">
+                            <span class="icon">💾</span> BACKUP DATA
+                        </button>
+                    </div>
+
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span>Status Sistem:</span>
+                            <span id="systemStatus" class="status-online">Online</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Cache:</span>
+                            <span id="cacheStatus" class="status-active">Aktif</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Data Tersimpan:</span>
+                            <span id="dataCount">0 laporan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2024 Koramil 1609-05/Sukasada</p>
+            <p>Sistem Laporan Harian Terintegrasi</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="cache.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
